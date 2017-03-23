@@ -1,5 +1,5 @@
 
-m __future__ import print_function
+from __future__ import print_function
 import twitter
 import nltk
 from operator import itemgetter
@@ -33,15 +33,7 @@ api = twitter.Api(consumer_key=CONSUMER_KEY,
 # tweet = tweet.text
 # print(tweet)
 
-tweet = "Meeting w/ Washington, D.C. @MayorBowser and Metro GM Paul Wiedefeld about incoming winter storm preparations here in D.C. Everyone be safe!"
-
-# make a text doc.
-
-# iterate through statuses
-	#
-	# get text
-
-	# dump to text file
+tweet = "Just heard Fake News CNN is doing polls again despite the fact that their election polls were a WAY OFF disaster. Much higher ratings at Fox"
 
 def topWordsCount(statuses):
 	badwords = ""
@@ -70,6 +62,10 @@ words_list = ['America', 'sad','tremendous','pathetic']
 def lexicalDispersion(wordsList, badText):
 	badText.dispersion_plot(words_list)
 
+# This function will build a truly great poem 
+# one which will be garbled and 
+# incomprehensible but 
+# with a deference to words
 def tremendousPoem(status):
 	tremendousPoem = ""
 	tokens = nltk.word_tokenize(status)
@@ -86,40 +82,53 @@ def tremendousPoem(status):
 					synonyms.append(l.name())
 					if l.antonyms():
 						antonyms.append(l.antonyms()[0].name())
-			# print(set(synonyms))
-			# print(set(antonyms))
-			tremendousPoem = tremendousPoem + " " + (random.choice(synonyms))
+	
+			if synonyms:
+				tremendousPoem = tremendousPoem + " " + (random.choice(synonyms))
 			if antonyms: 
 				tremendousPoem = tremendousPoem + " " + (random.choice(antonyms))
 
-		elif ps[1] == "NN" or ps[1] == "NNP":
-			tremendousPoem = tremendousPoem + " " + ps[0]
+		#elif ps[1] == "NN" or ps[1] == "NNP":
+			#tremendousPoem = tremendousPoem + " " + ps[0]
 
+	tremendousPoem = tremendousPoem[:140]
 	tremendousPoem.capitalize()
-	print(tremendousPoem)
+	return tremendousPoem
 
-def learnThings(status):
+# Here is a function meant as education 
+# which will define words 
+# but keep proper nouns 
+# so things still feel disorienting
+def educationPoem(status):
 	knowledgePoem = ""
 	tokens = nltk.word_tokenize(status)
 	partsOfSpeech = nltk.pos_tag(tokens)
 	
-	adjectiveList = []
+	defineList = []
 
 	for ps in partsOfSpeech: 
-		if ps[1] == "JJ" or ps[1] == "VB":
-			adjectiveList.append(ps[0])
+		if ps[1] == "JJ" or ps[1] == "VB" or ps[1] == "NN":
+			defineList.append(ps[0])
 		if ps[1] == "NNP": 
 			knowledgePoem = knowledgePoem + " " + ps[0]
 
-		if adjectiveList:
-			entropyWord = wn.synsets(random.choice(adjectiveList))
-			knowledgePoem = knowledgePoem + " " + (entropyWord[0].definition())
+	if defineList:
+		entropyWord = ""
+		while not wn.synsets(entropyWord): 
+			entropyWord = random.choice(defineList)
+		
+		synsEntropy = wn.synsets(entropyWord)
+		defEntropy = synsEntropy[0].definition()
+
+		knowledgePoem = knowledgePoem + " " + defEntropy
+		knowledgePoem = knowledgePoem[:140]
 	
 	knowledgePoem.capitalize()
-	print(knowledgePoem)
+	return knowledgePoem
 
-tremendousPoem(tweet)
-learnThings(tweet)
+api.PostUpdate(tremendousPoem(tweet))
+api.PostUpdate(educationPoem(tweet))
+
 
 # syns = wn.synsets('some word')
 # print(syns[0].definition())
