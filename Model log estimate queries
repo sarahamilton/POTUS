@@ -1,0 +1,44 @@
+-- pull from bidder schema in mySQL
+
+// to get LIs with models 
+SELECT b.campaign_group_id
+FROM custom_model a 
+JOIN campaign_group_model b 
+ON a.id = b.custom_model_id
+WHERE a.active=true and b.deleted=0;
+
+// to get campaigns with modifier models 
+select campaign_id 
+from campaign_bid_modifier_model 
+where deleted=0;
+
+// to get campaigns with bid models 
+select campaign_id 
+from campaign_bid_model 
+where deleted=0;
+
+-- pull from Vertica
+
+// sum of all imps in the past two weeks 
+Select sum(imps), ymd 
+from agg_dw_advertiser_publisher_analytics_adjusted 
+where ymd >= now() - interval '14 days' 
+and imp_type in (5,6) 
+group by 2;
+
+// sum of all imps from ALIs with custom models (past two weeks)
+Select sum(imps), ymd 
+from agg_dw_advertiser_publisher_analytics_adjusted 
+where ymd >= now() - interval '14 days' 
+and imp_type in (5,6) 
+and campaign_group_id in ([LIST FROM EXCEL WORKBOOK])
+group by 2;
+
+
+// sum of all imps from campaigns with custom models
+Select sum(imps), ymd 
+from agg_dw_advertiser_publisher_analytics_adjusted 
+where ymd >= now() - interval '14 days' 
+and imp_type in (5,6) 
+and campaign_id in ([TWO LISTS FROM EXCEL WORKBOOK])
+group by 2;

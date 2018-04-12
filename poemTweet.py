@@ -6,10 +6,10 @@ from operator import itemgetter
 from nltk.corpus import wordnet as wn
 import random
 
-CONSUMER_KEY = 'tUx3gDmkwV2MIOteqhCPJ8nQL'
-CONSUMER_SECRET = 'ceVcWk5sLfjz0np9sF2YlUoJiBT4cB4WmsqrSbi9EHChp3CA8O'
-ACCESS_TOKEN = '838614187135942657-oKlOQzBPuX3jOyiwACrgbvRSxZAukMI'
-ACCESS_TOKEN_SECRET = 'HBYIG9kvgCr2Tb2SkPFfma0bzkfI9OAimsH3FVcqdF17X'
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
+ACCESS_TOKEN = ''
+ACCESS_TOKEN_SECRET = ''
 
 username = "realDonaldTrump"
 tweet_count = 1
@@ -33,7 +33,7 @@ api = twitter.Api(consumer_key=CONSUMER_KEY,
 # tweet = tweet.text
 # print(tweet)
 
-tweet = "Just heard Fake News CNN is doing polls again despite the fact that their election polls were a WAY OFF disaster. Much higher ratings at Fox"
+tweet = "Anybody (especially  Fake News media) who thinks that Repeal & Replace of ObamaCare is dead does not know the love and strength in R Party!"
 
 def topWordsCount(statuses):
 	badwords = ""
@@ -104,14 +104,26 @@ def educationPoem(status):
 	tokens = nltk.word_tokenize(status)
 	partsOfSpeech = nltk.pos_tag(tokens)
 	
+	# to hold all the proper nouns in the tweet
+	properNounsList = []
+	
+	# to hold all the nouns and verbs in the tweet
 	defineList = []
 
+	# add all relevant words to the two arrays
 	for ps in partsOfSpeech: 
 		if ps[1] == "JJ" or ps[1] == "VB" or ps[1] == "NN":
 			defineList.append(ps[0])
 		if ps[1] == "NNP": 
-			knowledgePoem = knowledgePoem + " " + ps[0]
+			properNounsList.append(ps[0])
 
+	# if there are proper nouns in the array, randonly pick one 
+	if properNounsList: 
+		entropyNoun = ""
+		entropyNoun = random.choice(properNounsList)
+		knowledgePoem = knowledgePoem + entropyNoun + ": "
+
+	# if there are words in the defineList array, randonly pick one to define
 	if defineList:
 		entropyWord = ""
 		while not wn.synsets(entropyWord): 
@@ -120,14 +132,62 @@ def educationPoem(status):
 		synsEntropy = wn.synsets(entropyWord)
 		defEntropy = synsEntropy[0].definition()
 
-		knowledgePoem = knowledgePoem + " " + defEntropy
+		knowledgePoem = knowledgePoem + defEntropy
 		knowledgePoem = knowledgePoem[:140]
 	
 	knowledgePoem.capitalize()
 	return knowledgePoem
 
-api.PostUpdate(tremendousPoem(tweet))
-api.PostUpdate(educationPoem(tweet))
+# Here is a function 
+# to make a poem that will be loud
+# clamorous
+# clangorous 
+def clangorousPoem(status):
+	tokens = nltk.word_tokenize(status)
+	loudWord = random.choice(tokens)
+	loudWord = loudWord.upper()
+
+	loudTweet = ""
+	
+	while len(loudTweet) <= (139 - len(loudWord)) :
+		loudTweet += loudWord + " "
+
+	return loudTweet
+
+# Ooh, another poem-writing function! 
+# This one will negate everything 
+# in the hopes 
+# of creating something with 
+# a tinge of sense 
+def SADPoem(status):
+	tokens = nltk.word_tokenize(status)
+	SADtweet = ""
+
+	for tok in tokens: 
+		antonyms = []
+		for syn in wn.synsets(tok):
+			for l in syn.lemmas():
+				if l.antonyms():
+					antonyms.append(l.antonyms()[0].name())
+
+		print(antonyms)
+		if antonyms: 
+			SADRandomAntonym = random.choice(antonyms)
+			SADtweet += SADRandomAntonym + " "
+		else: 
+			SADtweet += tok + " "
+
+	SADtweet = SADtweet[:140]
+	return(SADtweet)
+
+
+
+#api.PostUpdate(tremendousPoem(tweet))
+#api.PostUpdate(educationPoem(tweet))
+#api.PostUpdate(clangorousPoem(tweet))
+#api.PostUpdate(SADPoem(tweet))
+
+topWordsCount(tweet)
 
 
 # syns = wn.synsets('some word')
